@@ -7,44 +7,10 @@ using System.Threading.Tasks;
 
 namespace Program
 {
-    public class GradeBook
+    public class GradeBook : GradeTracker
     {
-        private List<float> grades;
-        private string _name;
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (String.IsNullOrEmpty(value))
-                {
-                    throw new ArgumentException("Name cannot be null or empty");
-                }
-                               
-                    if (_name != value && NameChanged != null)
-                {
-                    NameChangedEventArgs args = new NameChangedEventArgs();
-                    args.ExistingName = _name;
-                    args.NewName = value;
+        protected List<float> grades;
 
-                    NameChanged(this, args);
-                }
-                _name = value;
-
-            }
-
-        }
-
-        public void WriteGrades(TextWriter destination)
-        {
-            for (int i = 0; i < grades.Count; i++)
-            {
-                destination.WriteLine(grades[i]);
-            }
-        }
 
         public event NameChangedDelegate NameChanged;
 
@@ -55,8 +21,9 @@ namespace Program
             grades = new List<float>();
         }
 
-        public GradeStatistics ComputeStatistics()
+        public override GradeStatistics ComputeStatistics()
         {
+            Console.WriteLine("GradeBook::Comp Stats");
             GradeStatistics stats = new GradeStatistics();
 
             float sum = 0;
@@ -70,7 +37,15 @@ namespace Program
             return stats;
         }
 
-        public void AddGrade(float grade)
+        public override void WriteGrades(TextWriter destination)
+        {
+            for(int i = grades.Count; i >0; i--)
+            {
+                destination.WriteLine(grades[i - 1]);
+            }    
+        }
+
+        public override void AddGrade(float grade)
         {
             grades.Add(grade);
         }
